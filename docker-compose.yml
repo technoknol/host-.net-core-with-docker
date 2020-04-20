@@ -1,0 +1,39 @@
+version: '3.7'
+  
+services:
+
+  myprojectapi:
+    container_name: 'myprojectapi'
+    image: 'myprojectapi:latest'
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+     - "8075:80"
+    volumes:
+     - ./:/app
+    depends_on:
+     - "myprojectdb"
+    networks:
+      - myproject-network
+
+  myprojectdb:
+    container_name: 'myprojectdb'
+    image: 'postgres:12'
+    ports:
+      - "7915:5432"
+    restart: always
+    environment:
+      # change this for a "real" app!
+      POSTGRES_PASSWORD: mypassword
+    volumes:
+      - myprojectdbvolume:/var/lib/postgresql/data
+    networks:
+      - myproject-network
+
+networks:
+  myproject-network:
+    driver: bridge
+
+volumes:
+  myprojectdbvolume:
